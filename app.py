@@ -4,6 +4,7 @@ import requests
 import numpy as np
 from PIL import Image
 from google.cloud import bigquery
+from google.oauth2 import service_account
 import datetime
 import plotly.express as px
 import pandas as pd
@@ -13,6 +14,13 @@ import json
 if "user_ID" not in st.session_state:
     st.session_state['user_ID'] = 1
 
+# Create API client.
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
+
+#Instanciate client for bigquery
+client = bigquery.Client(credentials=credentials)
 
 #Function
 def calc_objectif(weigth,height,age,genre:str):
@@ -56,7 +64,7 @@ def ID_read(ID):
     return rows
 
 #Instanciate client for bigquery
-client = bigquery.Client(project="foode-376420")
+client = bigquery.Client(credentials=credentials)
 
 
 # Create a sidebar with navigation links
@@ -310,7 +318,7 @@ if page == "Journal":
         "Date",
         datetime.date.today())
 
-    client = bigquery.Client(project="foode-376420")
+    client = bigquery.Client(credentials=credentials)
 
     # DAILY OBJ
     #Objectives request
