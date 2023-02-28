@@ -1,4 +1,4 @@
-# data viz 
+# data viz
 matplotlib
 seaborn
 
@@ -13,7 +13,6 @@ six>=1.14
 memoized-property
 pandas
 
-# App 
+# App
 streamlit
-protobuf==3.19.6
 plotly==5.13.0
