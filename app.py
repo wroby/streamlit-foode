@@ -1,12 +1,8 @@
 import streamlit as st
-from streamlit_elements import elements, mui, html
-from streamlit_elements import media
-import streamlit_elements as elem
 import time
 import requests
 import numpy as np
 from PIL import Image
-import os
 from google.cloud import bigquery
 import datetime
 import plotly.express as px
