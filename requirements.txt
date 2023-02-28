@@ -1,0 +1,19 @@
+# data viz 
+matplotlib
+seaborn
+
+# API
+gcsfs
+google-cloud-storage
+s3fs
+google-cloud-bigquery[pandas]
+
+# utilities
+six>=1.14
+memoized-property
+pandas
+
+# App 
+streamlit
+protobuf==3.19.6
+plotly==5.13.0
