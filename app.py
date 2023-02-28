@@ -310,7 +310,7 @@ if page == "Journal":
         "Date",
         datetime.date.today())
 
-    client = bigquery.Client()
+    client = bigquery.Client(project="foode-376420")
 
     # DAILY OBJ
     #Objectives request
