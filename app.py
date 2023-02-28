@@ -56,7 +56,7 @@ def ID_read(ID):
     return rows
 
 #Instanciate client for bigquery
-client = bigquery.Client()
+client = bigquery.Client(project="foode-376420")
 
 
 # Create a sidebar with navigation links
