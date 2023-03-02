@@ -5,10 +5,12 @@ import numpy as np
 from PIL import Image
 import os
 from google.cloud import bigquery
+from google.oauth2 import service_account
 import datetime
 import plotly.express as px
 import pandas as pd
 import json
+
 
 # Initialization
 if "user_ID" not in st.session_state:
