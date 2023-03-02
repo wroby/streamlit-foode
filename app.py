@@ -237,7 +237,7 @@ if page == "Camera":
                 st.markdown(f"""
                                 ## 🍽️ : {body_list[0]}
 
-                                #### **Per serving** :
+                                #### **Per serving**:
 
                                 🔥 {body_list[1]} calories
 
