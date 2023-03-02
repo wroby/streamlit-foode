@@ -3,8 +3,8 @@ import time
 import requests
 import numpy as np
 from PIL import Image
+import os
 from google.cloud import bigquery
-from google.oauth2 import service_account
 import datetime
 import plotly.express as px
 import pandas as pd
@@ -19,8 +19,12 @@ credentials = service_account.Credentials.from_service_account_info(
     st.secrets["gcp_service_account"]
 )
 
+# Instantiate project
+project="foode-376420"
+
 #Instanciate client for bigquery
-client = bigquery.Client(credentials=credentials)
+client = bigquery.Client(project=project, credentials=credentials)
+
 
 #Function
 def calc_objectif(weigth,height,age,genre:str):
@@ -62,9 +66,6 @@ def ID_read(ID):
     query = f"SELECT * FROM `foode-376420.foodE.ID_info` WHERE UserID = {ID}"
     rows = run_query(query)
     return rows
-
-#Instanciate client for bigquery
-client = bigquery.Client(credentials=credentials)
 
 
 # Create a sidebar with navigation links
@@ -219,8 +220,8 @@ if page == "Camera":
 
             # Post request to API
             headers = {'Content-Type': 'application/json'}
-            #url = "https://api-xdmhayaf3a-nw.a.run.app/predict"
-            url = "http://localhost:8000/predict"
+            url = "https://api-prod-xdmhayaf3a-od.a.run.app/predict/"
+            #url = "http://localhost:8000/predict"
             response = requests.post(f"{url}", headers = headers, json=jayson)
 
             if response.status_code == 200:
@@ -318,7 +319,7 @@ if page == "Journal":
         "Date",
         datetime.date.today())
 
-    client = bigquery.Client(credentials=credentials)
+    client = bigquery.Client(project=project, credentials=credentials)
 
     # DAILY OBJ
     #Objectives request
@@ -339,13 +340,13 @@ if page == "Journal":
     query_job = client.query(query)
     rows_raw = query_job.result()
     rows = [dict(row) for row in rows_raw]
-    d_prot = int(rows[0]["Protein"])
+    d_prot = int(rows[0]["Protein"]/protein*100)
     if d_prot > 100: d_prot=100
-    d_cal = int(rows[0]["Calories"])
+    d_cal = int(rows[0]["Calories"]/calories*100)
     if d_cal > 100: d_cal=100
-    d_carbs = int(rows[0]["Carbs"])
+    d_carbs = int(rows[0]["Carbs"]/carbs*100)
     if d_carbs > 100: d_carbs=100
-    d_fat = int(rows[0]["Fat"])
+    d_fat = int(rows[0]["Fat"]/fat*100)
     if d_fat > 100: d_fat=100
 
     #Daily graph
@@ -371,6 +372,14 @@ if page == "Journal":
 )
 
     #Pie chart
+    d_prot = int(rows[0]["Protein"])
+    if d_prot > 100: d_prot=100
+    d_cal = int(rows[0]["Calories"])
+    if d_cal > 100: d_cal=100
+    d_carbs = int(rows[0]["Carbs"])
+    if d_carbs > 100: d_carbs=100
+    d_fat = int(rows[0]["Fat"])
+    if d_fat > 100: d_fat=100
     data = pd.DataFrame({
     'Macronutrient': ['Protein', 'Carbs', 'Fat'],
     'Grams': [d_prot,d_carbs, d_fat]})
@@ -393,14 +402,13 @@ if page == "Journal":
     st.area_chart(data = client.query(cal_sevendays).to_dataframe(), x='Date') # AJOUTER UNE LIGNE OBJ
 
     nutri_sevendays = f"""
-        SELECT Date, SUM(Protein)*20/100 AS Protein , SUM(Carbs)/100 AS Carbs , SUM(Fat)*20/100 AS Fat
+        SELECT Date, SUM(Protein)/{protein}*100 AS Protein , SUM(Carbs)/{carbs}*100 AS Carbs , SUM(Fat)/{fat}*100 AS Fat
         FROM `foode-376420.foodE.macro`
         WHERE UserID = {user_ID} AND Date BETWEEN DATE_SUB('{d}', INTERVAL 7 DAY) AND '{d}'
         GROUP BY Date
      """
 
     st.write("Objectif nutritionnel sur les 7 derniers jours")
-
     st.line_chart(data = client.query(nutri_sevendays).to_dataframe(), x='Date') # AJOUTER UNE LIGNE OBJ
 
     # https://docs.streamlit.io/library/api-reference/charts/st.altair_chart ?
