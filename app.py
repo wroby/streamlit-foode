@@ -276,8 +276,7 @@ if page == "Upload":
 
         # Post request to API
         headers = {'Content-Type': 'application/json'}
-        #url = "https://api-xdmhayaf3a-nw.a.run.app/predict"
-        url = "http://localhost:8000/predict"
+        url = "https://api-prod-xdmhayaf3a-od.a.run.app/predict/"
         response = requests.post(f"{url}", headers = headers, json=jayson)
 
         if response.status_code == 200:
